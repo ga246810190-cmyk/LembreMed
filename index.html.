@@ -1,0 +1,265 @@
+ <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LembreMed - Lembrete de Medicamentos</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f2f7f5;
+      color: #222;
+    }
+
+    header {
+      background: #176b5b;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 34px;
+    }
+
+    header p {
+      font-size: 19px;
+    }
+
+    main {
+      max-width: 650px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      margin-bottom: 20px;
+      border-radius: 15px;
+      box-shadow: 0 3px 10px #0002;
+    }
+
+    h2 {
+      color: #176b5b;
+      font-size: 26px;
+    }
+
+    label {
+      display: block;
+      font-size: 20px;
+      margin-top: 15px;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      font-size: 20px;
+      border: 2px solid #aaa;
+      border-radius: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 17px;
+      margin-top: 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #176b5b;
+      color: white;
+    }
+
+    button:hover {
+      background: #0e5145;
+    }
+
+    .medicamento {
+      border-left: 7px solid #176b5b;
+      padding: 15px;
+      margin-top: 15px;
+      background: #f0f8f5;
+      border-radius: 8px;
+    }
+
+    .medicamento strong {
+      font-size: 23px;
+    }
+
+    .medicamento p {
+      font-size: 19px;
+    }
+
+    .tomado {
+      background: #d9f3df;
+      border-left-color: #278a42;
+    }
+
+    .botao-tomado {
+      background: #278a42;
+      font-size: 18px;
+      padding: 12px;
+    }
+
+    .acessibilidade {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .acessibilidade button {
+      width: auto;
+      padding: 12px 18px;
+      margin: 5px;
+      background: #444;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #176b5b;
+      color: white;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>💊 LembreMed</h1>
+  <p>Seu lembrete para não esquecer os medicamentos</p>
+</header>
+
+<main>
+
+  <div class="acessibilidade">
+    <button onclick="aumentarFonte()">A+ Aumentar texto</button>
+    <button onclick="diminuirFonte()">A- Diminuir texto</button>
+  </div>
+
+  <section class="card">
+    <h2>➕ Adicionar medicamento</h2>
+
+    <label for="nome">Nome do medicamento:</label>
+    <input type="text" id="nome" placeholder="Ex.: Medicamento">
+
+    <label for="horario">Horário:</label>
+    <input type="time" id="horario">
+
+    <button onclick="adicionarMedicamento()">
+      Adicionar medicamento
+    </button>
+  </section>
+
+  <section class="card">
+    <h2>📋 Meus medicamentos</h2>
+
+    <div id="lista">
+      <p>Nenhum medicamento cadastrado.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>LembreMed — Projeto escolar</p>
+  <p>Este site serve apenas como lembrete e não substitui orientação médica.</p>
+</footer>
+
+<script>
+
+let medicamentos = [];
+
+function adicionarMedicamento() {
+
+  const nome = document.getElementById("nome").value;
+  const horario = document.getElementById("horario").value;
+
+  if (nome === "" || horario === "") {
+    alert("Por favor, preencha o nome e o horário.");
+    return;
+  }
+
+  medicamentos.push({
+    nome: nome,
+    horario: horario,
+    tomado: false
+  });
+
+  document.getElementById("nome").value = "";
+  document.getElementById("horario").value = "";
+
+  mostrarMedicamentos();
+}
+
+function mostrarMedicamentos() {
+
+  const lista = document.getElementById("lista");
+
+  lista.innerHTML = "";
+
+  if (medicamentos.length === 0) {
+    lista.innerHTML = "<p>Nenhum medicamento cadastrado.</p>";
+    return;
+  }
+
+  medicamentos.forEach((medicamento, index) => {
+
+    const div = document.createElement("div");
+
+    div.className = "medicamento";
+
+    if (medicamento.tomado) {
+      div.classList.add("tomado");
+    }
+
+    div.innerHTML = `
+      <strong>💊 ${medicamento.nome}</strong>
+      <p>⏰ Horário: ${medicamento.horario}</p>
+
+      ${
+        medicamento.tomado
+        ? "<p>✅ Medicamento registrado como tomado.</p>"
+        : `<button class="botao-tomado"
+             onclick="marcarComoTomado(${index})">
+             ✅ Já tomei
+           </button>`
+      }
+    `;
+
+    lista.appendChild(div);
+  });
+}
+
+function marcarComoTomado(index) {
+
+  medicamentos[index].tomado = true;
+
+  mostrarMedicamentos();
+}
+
+function aumentarFonte() {
+
+  document.body.style.fontSize = "larger";
+}
+
+function diminuirFonte() {
+
+  document.body.style.fontSize = "initial";
+}
+
+</script>
+
+</body>
+</html>
